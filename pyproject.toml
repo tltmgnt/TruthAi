@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "apl-omega"
+version = "0.1.0"
+description = "Topology-Governed Advanced Payload Launcher (APL-Ω) Eventuality Matrix and TGA-Ω engine"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "Proprietary" }
+authors = [{ name = "TruthAi / APL-Ω" }]
+keywords = [
+  "topology",
+  "digital-twin",
+  "verification",
+  "systems-engineering",
+  "APL-Omega",
+  "TGA-Omega",
+]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Topic :: Scientific/Engineering",
+]
+
+[project.optional-dependencies]
+dev = ["pylint>=3.0"]
+
+[tool.setuptools.packages.find]
+include = ["apl_omega*"]
+
+[tool.setuptools.package-data]
+apl_omega = ["data/*.json"]

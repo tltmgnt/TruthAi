@@ -1,0 +1,30 @@
+[MAIN]
+ignore=tests
+jobs=1
+
+[MESSAGES CONTROL]
+disable=
+    C0114,
+    C0115,
+    C0116,
+    C0103,
+    R0902,
+    R0903,
+    R0913,
+    R0914,
+    R0917,
+    W0212,
+    C0301,
+    R0911,
+    R0912,
+    R0915,
+    W0511,
+    C0415
+
+[FORMAT]
+max-line-length=120
+
+[DESIGN]
+max-args=12
+max-locals=25
+max-attributes=20
