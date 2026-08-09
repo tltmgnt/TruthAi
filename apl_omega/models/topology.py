@@ -7,7 +7,7 @@ G_t = (V_t, E_t, W_t, X_t)
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any, Dict, Iterable, List, Optional, Set, Tuple
+from typing import Any, Dict, List, Set, Tuple
 
 
 @dataclass
