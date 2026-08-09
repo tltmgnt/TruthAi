@@ -1,0 +1,3 @@
+# APL-Ω runtime has no hard third-party dependencies (Python >= 3.9).
+# Optional development tools:
+pylint>=3.0

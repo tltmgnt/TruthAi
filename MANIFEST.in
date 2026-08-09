@@ -1,0 +1,6 @@
+include README.md
+include requirements.txt
+include data/*.json
+recursive-include Docs/APL-Omega *.md
+recursive-include tests *.py
+recursive-include examples *.py
