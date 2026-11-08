@@ -8,6 +8,23 @@ APL-Ω is a comprehensive **state, gap, transition, risk, and recovery framework
 
 Part of the [TruthAi](.) topology-governed intelligence platform.
 
+
+## Domain neutral TruthAi assurance core
+
+A separate dependency-free `truthai_assurance` package now implements versioned
+claim/artifact exchange, missingness-aware capability coverage, transitive review
+invalidation, and a snapshot-bound local authorization and estimated-cost gate.
+It is a bounded research prototype, not the complete frontier AI operating system.
+
+```sh
+python -m truthai_assurance demo
+```
+
+The synthetic two-domain rehearsal demonstrates a missing capability blocking the
+local gate and a changed artifact reopening dependent claims. It does not call
+MathOS or ManufacturingOS, authenticate reviewers, execute external actions, or
+provide scientific certification. See [scope, contracts and acceptance checks](Docs/TruthAi/ASSURANCE_CORE.md).
+
 ## Master principle
 
 \[

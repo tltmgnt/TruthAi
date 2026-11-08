@@ -27,7 +27,7 @@ classifiers = [
 dev = ["pylint>=3.0"]
 
 [tool.setuptools.packages.find]
-include = ["apl_omega*"]
+include = ["apl_omega*", "truthai_assurance*"]
 
 [tool.setuptools.package-data]
 apl_omega = ["data/*.json"]

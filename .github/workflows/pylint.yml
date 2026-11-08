@@ -21,5 +21,7 @@ jobs:
         pip install pylint
     - name: Unit tests
       run: python -m unittest discover -s tests -v
+    - name: Synthetic assurance integration
+      run: python -m truthai_assurance demo
     - name: Pylint
       run: pylint $(git ls-files '*.py') --rcfile=.pylintrc

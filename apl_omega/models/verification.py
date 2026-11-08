@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Dict, Iterable, List, Optional, Set
+from typing import Dict, Iterable, List, Set
 
 from apl_omega.formulas.metrics import evidence_freshness, verification_coverage
 from apl_omega.models.state import VerificationEvidenceState
