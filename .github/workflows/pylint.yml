@@ -4,7 +4,8 @@ on: [push, pull_request]
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    # Retain Python 3.9 availability instead of following the latest OS image.
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         python-version: ["3.9", "3.10", "3.12"]
@@ -21,5 +22,7 @@ jobs:
         pip install pylint
     - name: Unit tests
       run: python -m unittest discover -s tests -v
+    - name: Synthetic assurance integration
+      run: python -m truthai_assurance demo
     - name: Pylint
       run: pylint $(git ls-files '*.py') --rcfile=.pylintrc

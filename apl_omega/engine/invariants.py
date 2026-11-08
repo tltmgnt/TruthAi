@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Dict, List
+from typing import List
 
 from apl_omega.matrices.domain_matrices import INVARIANTS
 from apl_omega.models.state import SystemState, VerificationEvidenceState
