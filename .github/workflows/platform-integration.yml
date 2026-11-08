@@ -1,0 +1,45 @@
+name: Installed platform integration
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  integration:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          repository: tltmgnt/ResearchOs
+          ref: cc4cc4e79bfdb5dfd769387c3d5aa19e8f646077
+          path: .platform-core
+          persist-credentials: false
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          repository: tltmgnt/-Topology-for-Geographic-and-Spatial-System
+          ref: 19264be35259b142aa2a480ce92addf995a2bdcf
+          path: .spatial
+          persist-credentials: false
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          repository: tltmgnt/-Topology-for-Computation-and-Formal-Verification
+          ref: 9f0f742122b2a9497612a830e0803cc4dcb3d904
+          path: .formal
+          persist-credentials: false
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0
+        with:
+          python-version: '3.12'
+      - name: Install real packages
+        run: python -m pip install . ./.spatial ./.formal './.platform-core[signatures]'
+      - name: Actual cross-repository acceptance test
+        run: python -m unittest discover -s .platform-core/tests -p test_cross_repository.py -v
+      - name: Run installed demonstration outside checkout
+        run: |
+          cd "$RUNNER_TEMP"
+          python -m tect_interop.demo --output platform-report.json --ledger platform-events.sqlite
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: synthetic-platform-report
+          path: ${{ runner.temp }}/platform-report.json
+          retention-days: 7
