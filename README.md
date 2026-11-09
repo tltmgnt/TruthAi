@@ -23,3 +23,5 @@ The distribution retains its existing `apl-omega` name for compatibility. Its AP
 [All repositories](https://github.com/tltmgnt/ResearchOs/blob/main/docs/portfolio/INDEX.md) · [Contract and mathematical boundaries](https://github.com/tltmgnt/ResearchOs/blob/main/docs/INTEROPERABILITY.md) · [Curriculum](https://github.com/tltmgnt/ResearchOs/blob/main/docs/portfolio/CURRICULUM.md) · [New repository proposals](https://github.com/tltmgnt/ResearchOs/blob/main/docs/portfolio/NEW_REPOSITORIES.md).
 
 Real provider access, externally established identity/key custody, independent empirical evaluation and deployment approval are not completed by these software checks. No paid service, schedule or external communication is enabled by this change.
+
+**∞**
