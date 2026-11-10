@@ -25,3 +25,7 @@ The distribution retains its existing `apl-omega` name for compatibility. Its AP
 Real provider access, externally established identity/key custody, independent empirical evaluation and deployment approval are not completed by these software checks. No paid service, schedule or external communication is enabled by this change.
 
 **∞**
+
+## Topology compatibility and curriculum
+
+See the [repository-specific v2 curriculum](docs/portfolio/TOPOLOGY_CURRICULUM_V2.md) for the minimum useful mathematics, six-criterion compatibility scorecard, source-linked exercises and adoption boundaries.
