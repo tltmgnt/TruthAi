@@ -3,7 +3,7 @@
   "command": "python curriculum/lab.py --verify",
   "exit_code": 0,
   "expected_sha256": "354a3059199bde15c3f44e10cceeb61daec9efe4fdd05d646c235433212daec4",
-  "lab_sha256": "0ad32d2b781c86f8f009038f499a666be4f3d59513a3b90c2a8f265b5e7156c7",
+  "lab_sha256": "1a9633c7eed6c98e2cae3811bfc3af5acc784d3469e103c47649dbe39d37281b",
   "python": "3.12.14",
   "repository": "tltmgnt/TruthAi",
   "schema_version": 1,
