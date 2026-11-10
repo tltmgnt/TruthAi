@@ -1,6 +1,6 @@
 # Topology compatibility and curriculum v2 — TruthAi
 
-Version 2 adapts the explicit-molecular-graph teaching pattern to this repository's actual role. This is documentation and a learning/decision framework; it introduces no mathematical engine, runtime dependency or operational permission.
+The verified edition of version 2 adapts the explicit-molecular-graph teaching pattern to this repository's actual role. This edition adds executable learning checks and reviewed answer keys. It does not introduce a new topology engine or grant operational permission.
 
 ## Repository decision
 
@@ -40,47 +40,54 @@ Prerequisites: basic programming, sets, functions and graph vocabulary. Work in 
 | 5. Comparison | Justify mathematical necessity and cost. | Complete the six-criterion card for the existing approach and one proposed alternative; record unknowns honestly. | Evidence-backed recommendation with baseline and explicit veto conditions. |
 | 6. Reproduction | Communicate the bounded result. | Reproduce the capstone using existing offline fixtures and record software version, inputs, outputs and limitations. | Reviewable notebook or report distinguishing computation, replay, independent evaluation and authorization. |
 
-## Source-linked reading laboratory
+## Worked reasoning and source explanation
 
-The table is a guided selection of source lines, not an assertion that the whole repository is covered. Line numbers refer to the inspected source blob `b06331ff6d5c894050a76cc716b577bdb39b8bd4` in [truthai_assurance/registry.py](../../truthai_assurance/registry.py). Recheck anchors after source changes.
+Dependency(source=claim,target=prerequisite) points from a dependent to its prerequisite. Reviews must therefore be recorded bottom-up: artifact integrity, child review, then parent review. Replacing the upstream artifact changes the transitive parent snapshot and invalidates its review. This direction differs from the canonical controller's upstream-to-dependent relation convention; conversion must be explicit. The lab rejects the child↔parent cycle.
 
-| Line | Statement | Learning check |
+Read the [inspected source](https://github.com/tltmgnt/TruthAi/blob/4c99daf8435f53a9463db24ac119b5aa69b1a687/truthai_assurance/registry.py) alongside the [executable answer key](../../curriculum/lab.py). The source link is pinned to the inspected revision; the lab and any explicitly described fix are in this change.
+
+## Run the worked laboratory
+
+From the repository root, with Python 3.12 (the recorded local version is 3.12.14):
+
+```sh
+python curriculum/lab.py --verify
+```
+
+The lab checks **6 explicit expectations** against existing repository functions. It prints a JSON case report and exits nonzero on a wrong result. `--verify` additionally compares the entire case report with [expected.json](../../curriculum/expected.json). Read the input and predict each result before opening the answer key. No API account, credentials, model download, trading action or equipment connection is needed.
+
+| Checkpoint | Expected answer |
+| --- | --- |
+| review before prerequisites | `"ValueError"` |
+| matching evidence bytes | `true` |
+| bottom-up review recorded | `"REVIEW_RECORDED"` |
+| transitive binding changes | `true` |
+| upstream change invalidates parent review | `true` |
+| dependency cycle rejected | `"ValueError"` |
+
+The comparisons above encode independently specified small examples and contract expectations; a passing answer key is not evidence of complete domain correctness. The original functions and their existing test suites remain the authority for broader supported contracts.
+
+## Learner tasks and assessment rubric
+
+1. Before running the lab, predict every expected answer and derive one numeric result or state transition by hand.
+2. Explain the worked reasoning above using the referenced source, including the rejected or counterexample case.
+3. Add a new valid example and a nearby failing example. Explain which assumption changes, then compare against the existing implementation. For concept/static labs, keep the result explicitly at that level.
+4. Complete the scorecard for a proposed extension and a simpler baseline. Leave measurements unknown until collected; a task that the baseline already solves is not evidence for additional topology.
+
+| Competency | Points | Full-credit evidence |
 | --- | --- | --- |
-| [16](../../truthai_assurance/registry.py#L16) | `class Registry:` | State the input/output contract and trace one normal and one failing case. |
-| [19](../../truthai_assurance/registry.py#L19) | `def __init__(self):` | State the input/output contract and trace one normal and one failing case. |
-| [28](../../truthai_assurance/registry.py#L28) | `def nodes(self):` | State the input/output contract and trace one normal and one failing case. |
-| [29](../../truthai_assurance/registry.py#L29) | `return MappingProxyType(self._nodes)` | Predict the returned value and distinguish a computed result from authorization. |
-| [32](../../truthai_assurance/registry.py#L32) | `def events(self):` | State the input/output contract and trace one normal and one failing case. |
-| [33](../../truthai_assurance/registry.py#L33) | `return tuple(dict(event) for event in self._events)` | Predict the returned value and distinguish a computed result from authorization. |
-| [35](../../truthai_assurance/registry.py#L35) | `def _event(self, operation, subject, affected):` | State the input/output contract and trace one normal and one failing case. |
-| [40](../../truthai_assurance/registry.py#L40) | `def affected(self, subject):` | State the input/output contract and trace one normal and one failing case. |
-| [43](../../truthai_assurance/registry.py#L43) | `raise ValueError('unknown subject')` | Construct the triggering input and explain why rejection preserves the contract. |
-| [51](../../truthai_assurance/registry.py#L51) | `return sorted(found)` | Predict the returned value and distinguish a computed result from authorization. |
-| [53](../../truthai_assurance/registry.py#L53) | `def _changed(self, subject, operation):` | State the input/output contract and trace one normal and one failing case. |
-| [57](../../truthai_assurance/registry.py#L57) | `return affected` | Predict the returned value and distinguish a computed result from authorization. |
-| [59](../../truthai_assurance/registry.py#L59) | `def add(self, node):` | State the input/output contract and trace one normal and one failing case. |
-| [61](../../truthai_assurance/registry.py#L61) | `raise ValueError('new unique Artifact or Claim required')` | Construct the triggering input and explain why rejection preserves the contract. |
-| [63](../../truthai_assurance/registry.py#L63) | `raise ValueError('node limit reached')` | Construct the triggering input and explain why rejection preserves the contract. |
-| [67](../../truthai_assurance/registry.py#L67) | `def replace(self, node):` | State the input/output contract and trace one normal and one failing case. |
-| [69](../../truthai_assurance/registry.py#L69) | `raise ValueError('existing node required')` | Construct the triggering input and explain why rejection preserves the contract. |
-| [71](../../truthai_assurance/registry.py#L71) | `raise ValueError('node type cannot change')` | Construct the triggering input and explain why rejection preserves the contract. |
-| [74](../../truthai_assurance/registry.py#L74) | `return self._changed(node.id, 'replace')` | Predict the returned value and distinguish a computed result from authorization. |
-| [76](../../truthai_assurance/registry.py#L76) | `def _closure(self, subject):` | State the input/output contract and trace one normal and one failing case. |
-| [78](../../truthai_assurance/registry.py#L78) | `raise ValueError('unknown subject')` | Construct the triggering input and explain why rejection preserves the contract. |
-| [85](../../truthai_assurance/registry.py#L85) | `return sorted(found)` | Predict the returned value and distinguish a computed result from authorization. |
-| [87](../../truthai_assurance/registry.py#L87) | `def link(self, dependency):` | State the input/output contract and trace one normal and one failing case. |
-| [89](../../truthai_assurance/registry.py#L89) | `raise ValueError('Dependency required')` | Construct the triggering input and explain why rejection preserves the contract. |
-## Assessment and verification
+| Model and contract | 0–3 | Correct objects, relation direction, labels/units, input bounds and missingness. |
+| Derivation and trace | 0–3 | Hand derivation agrees with the specified fixture; source steps explain why. |
+| Counterexample | 0–3 | New failing/boundary case has a justified expected result; rejection is not suppressed. |
+| Scope and necessity | 0–3 | Distinguishes software behavior from validation and compares an explicit simpler alternative. |
 
-A learner must explain the model, trace the capstone, identify a counterexample and state the scope boundary. Assess these four competencies equally; a numerical score cannot compensate for an unsupported scientific or operational claim.
+Completion requires at least 10/12 and no zero in scope/necessity. A runnable answer key alone is not evidence that a learner achieved this competency. No learner-outcome study has been performed.
 
-Relevant existing checks:
+## Verification evidence and maintenance
 
-- [tests/test_engine.py](../../tests/test_engine.py)
-- [tests/test_formulas.py](../../tests/test_formulas.py)
-- [tests/test_master_matrix.py](../../tests/test_master_matrix.py)
+[VALIDATION.json](../../curriculum/VALIDATION.json) records the inspected base revision, local Python version, source/fixture hashes, lab/answer hashes, case count and exit codes. All cases were executed locally. An in-memory copy with a deliberately wrong comparison was also executed and returned nonzero, checking that the grading failure path is active. Those injected failures are harness checks, not scientific adversarial evaluations.
 
-Follow [README](../../README.md) for environment and installed-package instructions. Read scripts before execution; source-reading exercises do not authorize provider calls, model downloads, live orders, hardware actions or messages. Synthetic fixtures establish software behavior only. This documentation change does not report those exercises as already executed.
+The dedicated [curriculum workflow](../../.github/workflows/curriculum.yml) runs the same `--verify` command on relevant pull-request changes. CI status is reported by GitHub; the local record does not assert that remote CI passed. Existing full-suite and installed-package requirements still apply to runtime changes. When source or fixture semantics change, inspect the diff and rederive answers before updating expected.json. Never regenerate expected answers solely to silence a failure. Refresh the local validation record after an actual run; do not rewrite its recorded base revision as if a new run occurred.
 
 ## Interoperability and adoption gate
 
