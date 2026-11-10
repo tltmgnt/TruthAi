@@ -1,11 +1,7 @@
 """Offline curriculum answer key. Synthetic checks, never operational approval."""
-import ast
-import copy
-import importlib.util
 import json
 from pathlib import Path
 import sys
-import tempfile
 
 ROOT = Path(__file__).resolve().parents[1]
 for base in (ROOT, ROOT / "src", ROOT / "layer-b"):
@@ -59,7 +55,7 @@ if __name__ == "__main__":
     report = {"schema_version": 1, "status": "PASS", "case_count": len(CASES),
               "cases": CASES, "scope": "Synthetic curriculum checks only"}
     if sys.argv[1:] == ["--verify"]:
-        expected = json.loads((Path(__file__).parent / "expected.json").read_text())
-        if report != expected:
+        expected_report = json.loads((Path(__file__).parent / "expected.json").read_text())
+        if report != expected_report:
             raise AssertionError("Observed answers differ from curriculum/expected.json")
     print(json.dumps(report, sort_keys=True, indent=2, allow_nan=False))
