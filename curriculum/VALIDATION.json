@@ -1,0 +1,24 @@
+{
+  "case_count": 6,
+  "command": "python curriculum/lab.py --verify",
+  "exit_code": 0,
+  "expected_sha256": "354a3059199bde15c3f44e10cceeb61daec9efe4fdd05d646c235433212daec4",
+  "lab_sha256": "c7b44915707d4b1c8776b0c2028fd1a6e2af344b0918bad28a17c2efacd1af22",
+  "python": "3.12.14",
+  "repository": "tltmgnt/TruthAi",
+  "schema_version": 1,
+  "scope": "Local synthetic curriculum validation on the recorded source snapshot; not complete repository CI, learning outcomes, independent scientific reproduction or deployment approval",
+  "source_and_fixture_sha256": {
+    "truthai_assurance/__init__.py": "c0130cc6fe5d2791b73795253c5f5d3a16bf68ec901eecdadb0ffc4024c0ca21",
+    "truthai_assurance/__main__.py": "e8d580d2bc046e4f8471c39c6327b472a5485e3bffa20cf55b142ae5c1b73878",
+    "truthai_assurance/contracts.py": "ddc55fe789f13e7292affbf59ac853531af840157581e3776fed318a38d0da80",
+    "truthai_assurance/gaps.py": "51a16b188b44df94f0bac35046203a7834e6d01a855ec102e27a8cf277304f2e",
+    "truthai_assurance/registry.py": "71e111f07d034767e5db7cc7e9323f392455c17d9ee3c8d0a4862b8f165911a4"
+  },
+  "source_base_commit": "4c99daf8435f53a9463db24ac119b5aa69b1a687",
+  "standard_library_only_probe": {
+    "command": "python -S curriculum/lab.py --verify",
+    "exit_code": 0
+  },
+  "wrong_expectation_exit_code": 1
+}
