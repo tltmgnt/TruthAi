@@ -1,5 +1,14 @@
 # TruthAi
 
+<!-- research-workbench:start -->
+## Research workbench
+
+[Open this repository's private workbench](https://tltmgnt-truthai.troturn31.chatgpt.site) · [All repository workbenches](https://tltmgnt-research-workbenches.troturn31.chatgpt.site)
+
+The hosted interface requires ChatGPT sign-in and access to the private Site. It supports browser-local research records, evidence fingerprints and workspace export. It is a prototype: no live AI model or repository backend is connected, and it does not establish external validation.
+<!-- research-workbench:end -->
+
+
 TruthAi is a research platform for topology-governed claim, evidence and capability workflows across heterogeneous AI systems and domain tools. The broader operating-system vision is a research objective, not a demonstrated frontier-model or autonomous infrastructure capability.
 
 ## Implemented platform core
