@@ -10,7 +10,8 @@ STATES = ('GENERATED','UNVERIFIED','SUPPORTED','ADVERSARIAL_TEST','REPRODUCED','
 ATTACKS = {'source_poisoning','contradiction_injection','assumption_violation'}
 
 def demand(ok, why):
-    if not ok: raise ValueError(why)
+    if not ok:
+        raise ValueError(why)
 
 def stamp(s):
     t=datetime.fromisoformat(s.replace('Z','+00:00'))
@@ -23,13 +24,15 @@ def check(r, root, now=None):
     demand(r.get('repository','').startswith('tltmgnt/'), 'repository')
     demand(r.get('canonical_tect')=={'repository':'tltmgnt/ResearchOs','runtime':'tect_runtime','version':'0.1.0'},'canonical TECT drift')
     demand(r.get('policy_version')=='1.0' and r.get('independent_reproduction_verified') is False and r.get('deployment_authorized') is False,'policy and external scope')
-    claims=r.get('claims'); evidence=r.get('evidence'); reviews=r.get('reviews')
+    claims=r.get('claims')
+    evidence=r.get('evidence')
+    reviews=r.get('reviews')
     demand(isinstance(claims,list) and claims and isinstance(evidence,list) and isinstance(reviews,list),'lists required')
     byid={}
     for c in claims:
         cid=c.get('id')
         demand(isinstance(cid,str) and cid and cid not in byid,'claim identity')
-        demand(type(c.get('version')) is int and c['version']>0,'claim version')
+        demand((isinstance(c.get('version'), int) and not isinstance(c['version'], bool)) and c['version']>0,'claim version')
         demand(all(isinstance(c.get(k),str) and c[k].strip() for k in ('statement','scope','source_ref','limitations')),'claim declaration')
         demand(isinstance(c.get('assumptions'),list) and c['assumptions'],'assumptions')
         demand(c.get('state') in STATES and c.get('deployment_authorized') is False,'state / authority')
@@ -40,22 +43,27 @@ def check(r, root, now=None):
         for d in byid[k]['dependencies']:
             demand(d in byid and d!=k,'invalid dependency')
             walk(d,active|{k})
-    for k in byid: walk(k,set())
-    bound={k:[] for k in byid}; ids=set()
+    for k in byid:
+        walk(k,set())
+    bound={k:[] for k in byid}
+    ids=set()
     for e in evidence:
         key=e.get('id')
         demand(isinstance(key,str) and key and key not in ids,'evidence identity')
         ids.add(key)
-        k=e.get('claim_id'); demand(k in byid and e.get('claim_version')==byid[k]['version'],'stale evidence version')
+        k=e.get('claim_id')
+        demand(k in byid and e.get('claim_version')==byid[k]['version'],'stale evidence version')
         demand(e.get('kind') in ('validation','reproduction','attack','contradiction') and e.get('result') in ('PASS','FAIL','UNCERTAIN'),'evidence outcome')
         demand(all(isinstance(e.get(f),str) and e[f].strip() for f in ('actor','source_id','method','group','scope','assumptions')),'provenance missing')
         demand(stamp(e['observed_at'])<=now<stamp(e['expires_at']),'expired/future evidence')
-        name=e['artifact_path']; rel=Path(name)
+        name=e['artifact_path']
+        rel=Path(name)
         demand(not rel.is_absolute() and '..' not in rel.parts,'unsafe artifact path')
         path=(root/rel).resolve()
         demand(path.is_relative_to(root.resolve()) and path.is_file(),'artifact missing')
         demand(hashlib.sha256(path.read_bytes()).hexdigest()==e['sha256'],'artifact digest mismatch')
-        if e['kind']=='attack': demand(e.get('attack_class') in ATTACKS,'attack class')
+        if e['kind']=='attack':
+            demand(e.get('attack_class') in ATTACKS,'attack class')
         bound[k].append(e)
     for review in reviews:
         k=review.get('claim_id')
@@ -70,20 +78,31 @@ def check(r, root, now=None):
         demand(hashlib.sha256(file.read_bytes()).hexdigest()==review['sha256'],'review digest mismatch')
     summary=[]
     for c in claims:
-        k=c['id']; s=c['state']; ev=bound[k]; blockers=[]
+        k=c['id']
+        s=c['state']
+        ev=bound[k]
+        blockers=[]
         v=[e for e in ev if e['kind']=='validation' and e['result']=='PASS']
         attacks={e['attack_class'] for e in ev if e['kind']=='attack' and e['result']=='PASS'}
         if s not in ('GENERATED','UNVERIFIED','CONTESTED'):
-            if not v: blockers.append('NO_VALIDATION')
-            if any(e['kind']=='contradiction' and e['result']=='PASS' for e in ev): blockers.append('UNRESOLVED_CONTRADICTION')
-            if any(byid[d]['state'] not in ('SUPPORTED','ADVERSARIAL_TEST','REPRODUCED','VALIDATED','STABLE','ASSURED') for d in c['dependencies']): blockers.append('UNVERIFIED_DEPENDENCY')
-        if s in ('ADVERSARIAL_TEST','REPRODUCED','VALIDATED','STABLE','ASSURED') and attacks!=ATTACKS: blockers.append('ATTACK_COVERAGE_MISSING')
+            if not v:
+                blockers.append('NO_VALIDATION')
+            if any(e['kind']=='contradiction' and e['result']=='PASS' for e in ev):
+                blockers.append('UNRESOLVED_CONTRADICTION')
+            if any(byid[d]['state'] not in ('SUPPORTED','ADVERSARIAL_TEST','REPRODUCED','VALIDATED','STABLE','ASSURED') for d in c['dependencies']):
+                blockers.append('UNVERIFIED_DEPENDENCY')
+        if s in ('ADVERSARIAL_TEST','REPRODUCED','VALIDATED','STABLE','ASSURED') and attacks!=ATTACKS:
+            blockers.append('ATTACK_COVERAGE_MISSING')
         if s in ('REPRODUCED','VALIDATED','STABLE','ASSURED'):
             reps=[e for e in ev if e['kind']=='reproduction' and e['result']=='PASS']
-            if not any(a['group']!=b['group'] and a['actor']!=b['actor'] and a['source_id']!=b['source_id'] and a['sha256']!=b['sha256'] for a in v for b in reps): blockers.append('SEPARATE_REPRODUCTION_MISSING')
-        if s in ('VALIDATED','STABLE','ASSURED') and not any(x['claim_id']==k and x['claim_version']==c['version'] and x.get('decision')=='PASS' and x.get('scope')==c['scope'] for x in reviews): blockers.append('REVIEW_MISSING')
-        if s in ('STABLE','ASSURED') and not any(e['kind']=='attack' and e['result']=='PASS' and type(e.get('distance')) in (float,int) and 0<=e['distance']<0.1 for e in ev): blockers.append('STABILITY_SCOPE_MISSING')
-        if s=='ASSURED': blockers.append('EXTERNAL_AUTHORITY_NOT_AUTHENTICATED')
+            if not any(a['group']!=b['group'] and a['actor']!=b['actor'] and a['source_id']!=b['source_id'] and a['sha256']!=b['sha256'] for a in v for b in reps):
+                blockers.append('SEPARATE_REPRODUCTION_MISSING')
+        if s in ('VALIDATED','STABLE','ASSURED') and not any(x['claim_id']==k and x['claim_version']==c['version'] and x.get('decision')=='PASS' and x.get('scope')==c['scope'] for x in reviews):
+            blockers.append('REVIEW_MISSING')
+        if s in ('STABLE','ASSURED') and not any(e['kind']=='attack' and e['result']=='PASS' and type(e.get('distance')) in (float,int) and 0<=e['distance']<0.1 for e in ev):
+            blockers.append('STABILITY_SCOPE_MISSING')
+        if s=='ASSURED':
+            blockers.append('EXTERNAL_AUTHORITY_NOT_AUTHENTICATED')
         demand(not blockers, 'unsafe promotion '+k+': '+','.join(blockers))
         summary.append({'claim_id':k,'declared_state':s,'evidence_count':len(ev)})
     return {'result':'REGISTER_CONSISTENT_NOT_ASSURED','repository':r['repository'],'claims':summary,
@@ -93,27 +112,45 @@ def selftest():
     import copy
     from tempfile import TemporaryDirectory
     with TemporaryDirectory() as tmp:
-        root=Path(tmp); (root/'source').write_text('synthetic')
+        root=Path(tmp)
+        (root/'source').write_text('synthetic')
         c={'id':'test','version':1,'statement':'fictional','scope':'test','source_ref':'source','limitations':'no real data','assumptions':['synthetic'],'state':'UNVERIFIED','dependencies':[],'deployment_authorized':False}
         r={'schema_version':'tect-evidence-v1','repository':'tltmgnt/synthetic','canonical_tect':{'repository':'tltmgnt/ResearchOs','runtime':'tect_runtime','version':'0.1.0'},'policy_version':'1.0','independent_reproduction_verified':False,'deployment_authorized':False,'claims':[c],'evidence':[],'reviews':[]}
         assert check(r,root)['result']=='REGISTER_CONSISTENT_NOT_ASSURED'
-        bad=copy.deepcopy(r); bad['claims'][0]['state']='SUPPORTED'
-        try: check(bad,root); raise AssertionError('unsupported promotion accepted')
-        except ValueError: pass
-        bad=copy.deepcopy(r); bad['canonical_tect']['version']='9.0'
-        try: check(bad,root); raise AssertionError('authority drift accepted')
-        except ValueError: pass
-        bad=copy.deepcopy(r); bad['claims'][0]['dependencies']=['test']
-        try: check(bad,root); raise AssertionError('cycle accepted')
-        except ValueError: pass
-        bad=copy.deepcopy(r); bad['claims'][0]['state']='ASSURED'
-        try: check(bad,root); raise AssertionError('ASSURED accepted')
-        except ValueError: pass
+        bad=copy.deepcopy(r)
+        bad['claims'][0]['state']='SUPPORTED'
+        try:
+            check(bad,root)
+            raise AssertionError('unsupported promotion accepted')
+        except ValueError:
+            pass
+        bad=copy.deepcopy(r)
+        bad['canonical_tect']['version']='9.0'
+        try:
+            check(bad,root)
+            raise AssertionError('authority drift accepted')
+        except ValueError:
+            pass
+        bad=copy.deepcopy(r)
+        bad['claims'][0]['dependencies']=['test']
+        try:
+            check(bad,root)
+            raise AssertionError('cycle accepted')
+        except ValueError:
+            pass
+        bad=copy.deepcopy(r)
+        bad['claims'][0]['state']='ASSURED'
+        try:
+            check(bad,root)
+            raise AssertionError('ASSURED accepted')
+        except ValueError:
+            pass
     return 'synthetic conservative and negative controls passed'
 
-if __name__=='__main__':
+def main():
     try:
-        if '--self-test' in sys.argv: print(selftest())
+        if '--self-test' in sys.argv:
+            print(selftest())
         else:
             root=Path(__file__).resolve().parent.parent
             p=root/'evidence_tect/register.json' if len(sys.argv)==1 else Path(sys.argv[1]).resolve()
@@ -122,3 +159,6 @@ if __name__=='__main__':
     except (ValueError,KeyError,TypeError,OSError,AssertionError) as exc:
         print('TECT EVIDENCE GATE FAILED:',exc,file=sys.stderr)
         sys.exit(2)
+
+if __name__ == '__main__':
+    main()
