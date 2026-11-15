@@ -40,7 +40,7 @@
   },
   "current_implementation_status_file": "../portfolio/STATUS.json",
   "pea": {
-    "version": "0.1.0",
+    "version": "0.1.1",
     "status": "experimental_offline_measurement_sidecar",
     "specification": "PEA_RESEARCH.md",
     "module": "../../pea_assurance",
