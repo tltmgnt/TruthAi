@@ -178,7 +178,7 @@ class DiscoveryTests(unittest.TestCase):
     def test_module_cli_offline_smoke(self):
         with tempfile.TemporaryDirectory() as tmp:
             result = subprocess.run(
-                [sys.executable, "-m", "mathos.research.discovery",
+                [sys.executable, "-m", "mathosx.discovery",
                  "--limit", "2", "--output-dir", tmp],
                 capture_output=True, text=True, check=False,
             )
