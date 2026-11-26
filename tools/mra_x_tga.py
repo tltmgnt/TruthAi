@@ -31,7 +31,7 @@ def evaluate(record):
     missing = [k for k in REQUIRED if not isinstance(record.get(k), str) or not record[k].strip()]
     if missing:
         return result("DECOMPOSE", ["missing: " + ", ".join(missing)])
-    if type(record.get("mission_stopped")) is not bool or type(record.get("refuted")) is not bool:
+    if not isinstance(record.get("mission_stopped"), bool) or not isinstance(record.get("refuted"), bool):
         return result("STOP", ["explicit Boolean mission_stopped and refuted required"])
     if record["refuted"]:
         return result("RETIRE", ["refutation reported; independent review required"])
@@ -56,7 +56,7 @@ def evaluate(record):
         return result("STOP", ["budget, used and reserve required"])
     for key in RESOURCES:
         values = [x.get(key) for x in (budget, used, reserve)]
-        if any(type(v) is not int or v < 0 for v in values):
+        if any(not isinstance(v, int) or isinstance(v, bool) or v < 0 for v in values):
             return result("STOP", ["invalid resource: " + key])
         if values[1] + values[2] > values[0]:
             return result("STOP", ["budget exceeded: " + key])
@@ -86,25 +86,32 @@ class PolicyTests(unittest.TestCase):
     def test_missing(self):
         self.assertEqual(evaluate({})["status"], "DECOMPOSE")
     def test_tamper(self):
-        r = example(); r["evidence"][0]["content"] = "changed"
+        r = example()
+        r["evidence"][0]["content"] = "changed"
         self.assertEqual(evaluate(r)["status"], "STOP")
     def test_duplicate(self):
-        r = example(); r["prior_claim_hashes"] = [digest(r["claim"])]
+        r = example()
+        r["prior_claim_hashes"] = [digest(r["claim"])]
         self.assertEqual(evaluate(r)["status"], "STOP")
     def test_reopen(self):
-        r = example(); r["new_hypothesis"] = False
+        r = example()
+        r["new_hypothesis"] = False
         self.assertEqual(evaluate(r)["status"], "STOP")
     def test_budget(self):
-        r = example(); r["reserve"]["calls"] = 5
+        r = example()
+        r["reserve"]["calls"] = 5
         self.assertEqual(evaluate(r)["status"], "STOP")
     def test_boolean_budget(self):
-        r = example(); r["used"]["calls"] = False
+        r = example()
+        r["used"]["calls"] = False
         self.assertEqual(evaluate(r)["status"], "STOP")
     def test_refutation(self):
-        r = example(); r["refuted"] = True
+        r = example()
+        r["refuted"] = True
         self.assertEqual(evaluate(r)["status"], "RETIRE")
     def test_obligations(self):
-        r = example(); r["obligations"] = []
+        r = example()
+        r["obligations"] = []
         self.assertEqual(evaluate(r)["status"], "DECOMPOSE")
 
 
@@ -119,7 +126,8 @@ def main():
         suite = unittest.defaultTestLoader.loadTestsFromTestCase(PolicyTests)
         return 0 if unittest.TextTestRunner(verbosity=2).run(suite).wasSuccessful() else 1
     if args.example:
-        print(json.dumps(example(), indent=2)); return 0
+        print(json.dumps(example(), indent=2))
+        return 0
     try:
         record = json.loads(args.record.read_text(encoding="utf-8"))
     except (OSError, ValueError, UnicodeError) as exc:
